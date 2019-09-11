@@ -1,1 +1,14 @@
-remote_theme: andrewbanchich/future-imperfect-jekyll-theme
+title: ShapeFactory
+description: design automation resources 
+
+remote_theme: alexander-heimbuch/millidocs
+
+markdown: kramdown
+kramdown:
+  syntax_highlighter_opts:
+    disable : true
+
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - README.md
