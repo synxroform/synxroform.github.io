@@ -1,0 +1,153 @@
+<!DOCTYPE html><html lang="ru"><head><title>Give Me More</title><link rel="stylesheet" href="/css/page_style.css"><link rel="stylesheet" href="/css/article_style.css"><link rel="stylesheet" href="/css/picture_style.css"><link rel="stylesheet" href="/css/syntax.css"><link rel="stylesheet" href="/css/image_viewer.css"></head><body><div class="head_white_background"></div><div class="head_background"></div><div class="button_panel"><a href="http://github.com/synxroform/"><img src="/images/GitHub_alt-512.png" height="40px"></a></div><!-- navigation --><a href="http://localhost:1313/posts/objects-and-methods/"><svg class="arrow_next" viewBox="0 0 477.175 477.175"><linearGradient id="lin_grad2"><stop offset="0%" stop-color="#fff0"></stop><stop offset="100%" stop-color="white"></stop></linearGradient><g><path d="M360.731,229.075l-225.1-225.1c-5.3-5.3-13.8-5.3-19.1,0s-5.3,13.8,0,19.1l215.5,215.5l-215.5,215.5 c-5.3,5.3-5.3,13.8,0,19.1c2.6,2.6,6.1,4,9.5,4c3.4,0,6.9-1.3,9.5-4l225.1-225.1C365.931,242.875,365.931,234.275,360.731,229.075z" fill="url(#lin_grad2)"></path></g></svg></a><div class="page_container"><div class="page_head"><a class="page_button" href="/index.html">список статей</a><span class="page_logo">СИНХРОФОРМА</span><span class="page_date">21.09.2019</span></div><div class="page_id_container"><span class="page_id">A.01</span></div><article class="page_text">
+
+<p>Периодически, в различных задачах возникает необходимость построения функции расстояния от поля до
+некоторой точки. В принципе, реализация у функции простая, но так как она будет вызываться многократно
+в некотором цикле, то к поиску решения необходимо отнестись серьёзно. Алгоритм я буду писать на Julia -
+новом и высокопроизводительном языке, специализированном для проведения технических расчетов.
+Создатели языка обещают скорость выполнения сравнимую с Fortran или С. Julia является компилируемым языком,
+но в отличии от Fortran компиляция выполняется автоматически, при первом обращении к модулю. Такая особенность
+очень удобна при разработке программ состоящих из множества модулей, так как Julia самостоятельно разрешает все
+зависимости проекта без использования make-файлов. Лично мне Julia понравилась тем, что она очень похожа на Matlab.
+Это также означает что она гораздо чище NumPy, поскольку векторные операции встроены непосредственно в язык, а не в отдельный модуль.
+Как и Python, Julia является динамическим языком со сборщиком мусора, хотя с динамичностью всё сложнее, ведь она
+способна специализировать функции под конкретные типы аргументов, наподобие Numba, только на всём языке вместо
+сильно ограниченного подмножества. Так же как и в любом другом динамическом языке, программирование быстрых алгоритмов
+требует специальных методик.</p>
+
+<p>Итак, приступим к решению. Для начала, нам необходимо построить поле в котором мы будем
+производить измерения. Выражаясь языком компьютерной графики - вертикальный и
+горизонтальный линейные градиенты. В Julia, матрице можно присвоить вектор, и в зависимости
+от того столбец это или строка, он будет повторятся в нужном направлении&hellip;</p>
+<div class="highlight"><pre class="chroma"><code class="language-julia" data-lang="julia"><span class="k">function</span> <span class="n">gradient</span><span class="p">(</span><span class="n">nu</span><span class="p">,</span> <span class="n">nv</span><span class="p">)</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="n">nu</span><span class="p">,</span> <span class="n">nv</span><span class="p">)</span>   <span class="c"># создаем массив заполненный нулями</span>
+    <span class="n">x</span> <span class="o">.=</span> <span class="p">(</span><span class="mi">1</span><span class="o">:</span><span class="n">nv</span><span class="p">)</span> <span class="o">./</span> <span class="n">nv</span>   <span class="c"># присваиваем массиву линейный градиент </span>
+    <span class="k">return</span> <span class="n">x</span><span class="p">,</span> <span class="n">rotl90</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="c"># возвращаем градиент и его повёрнутую копию</span>
+<span class="k">end</span></code></pre></div>
+<p><img src="/posts/images/give-me-more/img_logic.png" width="100%"/></p>
+
+<p>Теперь, что касается самой задачи, нам необходимо построить не расстояние до точки, а функцию
+от этого расстояния. В оригинале функция выглядит так &hellip;</p>
+<div class="highlight"><pre class="chroma"><code class="language-julia" data-lang="julia"><span class="n">smooth</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">x</span><span class="o">^</span><span class="n">p</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">x</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">x</span><span class="p">)</span><span class="o">^</span><span class="n">p</span> <span class="o">*</span> <span class="n">x</span></code></pre></div>
+<p>если упростить под конкретный p = 2 то можно получить &hellip;</p>
+<div class="highlight"><pre class="chroma"><code class="language-julia" data-lang="julia"><span class="n">smooth</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">=</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">x</span> <span class="o">-</span> <span class="mi">3</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">x</span><span class="o">^</span><span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span></code></pre></div>
+<p>следующим шагом будет функция вычисления расстояния &hellip;</p>
+<div class="highlight"><pre class="chroma"><code class="language-julia" data-lang="julia"><span class="k">function</span> <span class="n">distance</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">point</span><span class="p">)</span>
+    <span class="n">du</span> <span class="o">=</span> <span class="err">@</span><span class="o">.</span> <span class="n">u</span> <span class="o">-</span> <span class="n">point</span><span class="p">[</span><span class="o">:</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span>      <span class="c"># предполагается, что точка двухмерная</span>
+    <span class="n">dv</span> <span class="o">=</span> <span class="err">@</span><span class="o">.</span> <span class="n">v</span> <span class="o">-</span> <span class="n">point</span><span class="p">[</span><span class="o">:</span><span class="p">,</span><span class="mi">2</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">smooth</span><span class="p">(</span><span class="n">min</span><span class="p">(</span><span class="n">sqrt</span><span class="p">(</span><span class="n">du</span><span class="o">^</span><span class="mi">2</span> <span class="o">+</span> <span class="n">dv</span><span class="o">^</span><span class="mi">2</span><span class="p">),</span> <span class="mi">1</span><span class="p">))</span> <span class="c"># длина вектора uv</span>
+<span class="k">end</span></code></pre></div>
+<p>Вот и всё, казалось бы что ещё можно добавить, самая простая и следовательно оптимальная реализация
+алгоритма, но всё же давайте проведём измерения &hellip;</p>
+<div class="highlight"><pre class="chroma"><code class="language-julia" data-lang="julia"><span class="n">img</span> <span class="o">=</span> <span class="n">gradient</span><span class="p">(</span><span class="mi">10000</span><span class="p">,</span> <span class="mi">10000</span><span class="p">)</span>
+<span class="nd">@time</span> <span class="n">d</span> <span class="o">=</span> <span class="n">distance</span><span class="o">.</span><span class="p">(</span><span class="n">img</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">img</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="p">[[</span><span class="mf">0.5</span> <span class="mf">0.5</span><span class="p">]])</span></code></pre></div>
+<p>макрос @time показывает &hellip;</p>
+
+<blockquote>
+<p>15.622032 seconds (216.97 M allocations: 19.624 GiB, 9.54% gc time)</p>
+</blockquote>
+
+<p>Постойте, для нашей задачи, несмотря на то, что размер градиента не будет превышать 1000х1000,
+такие показатели производительности совершенно неприемлемы. Ладно, попробуем переписать алгоритм на
+Fortran, благо что Julia отлично с ним взаимодействует.</p>
+
+<p>Сегодня Fortran переживает вторую молодость, благодаря таким проектам как Flang и CUDA-Fortran. Конечно, очень часто
+можно услышать замечания по поводу того, что это старый и сложный язык программирования, но как правило такое говорят
+вечно молодые программисты java script, не имеющие отношения к разработке численных методов. Некоторым не нравится его
+многословность, но это относится только к блоку объявлений переменных. В общем, современный человек не будет
+чувствовать себя ущербным программируя на Fortran - свежие компиляторы, качественные библиотеки, возможность
+вызова практически из любого языка программирования, но самое главное - адекватное сообщество.</p>
+
+<p>Приступим к делу, первым пойдет градиент &hellip;</p>
+<div class="highlight"><pre class="chroma"><code class="language-fortran" data-lang="fortran"><span class="k">subroutine </span><span class="n">gradient</span><span class="p">(</span><span class="n">uv</span><span class="p">)</span>
+    <span class="kt">real</span><span class="p">,</span> <span class="k">intent</span><span class="p">(</span><span class="n">out</span><span class="p">),</span> <span class="k">dimension</span><span class="p">(:,:,:)</span> <span class="kd">::</span> <span class="n">uv</span> 
+    <span class="kt">integer</span> <span class="kd">::</span> <span class="n">sz</span><span class="p">,</span> <span class="n">n</span>
+    
+    <span class="n">sz</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">size</span><span class="p">(</span><span class="n">uv</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">size</span><span class="p">(</span><span class="n">uv</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span> <span class="o">-</span> <span class="mi">1</span>
+    <span class="k">do </span><span class="n">n</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">sz</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">n</span> <span class="o">&lt;</span> <span class="n">size</span><span class="p">(</span><span class="n">uv</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span> <span class="k">then
+</span><span class="k">            </span><span class="n">uv</span><span class="p">(</span><span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="p">:,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">=</span> <span class="kt">real</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="o">/</span> <span class="n">size</span><span class="p">(</span><span class="n">uv</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">end if
+</span><span class="k">        if</span> <span class="p">(</span><span class="n">n</span> <span class="o">&lt;</span> <span class="n">size</span><span class="p">(</span><span class="n">uv</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span> <span class="k">then
+</span><span class="k">            </span><span class="n">uv</span><span class="p">(:,</span> <span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span> <span class="o">=</span> <span class="kt">real</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="o">/</span> <span class="n">size</span><span class="p">(</span><span class="n">uv</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="k">end if
+</span><span class="k">    end do
+</span><span class="k">end</span></code></pre></div>
+<p>Это значительно больше чем аналогичная функция Julia, да и логика совсем другая. Дело
+в том, что Fortran не поддерживает broadcasting, то есть массивы участвующие в некоторой операции
+должны быть одинаковой структуры. Также я не стал генерировать градиент внутри процедуры и исключил
+промежуточные массивы в вычислениях. Следует отметить, что только глядя на шапку функции, можно многое
+сказать о выделяемой памяти, не надо как в С/C++ выискивать malloc/new внутри кода.</p>
+
+<p>Функция smooth осталась без изменений &hellip;</p>
+<div class="highlight"><pre class="chroma"><code class="language-fortran" data-lang="fortran"><span class="k">pure function </span><span class="n">smooth</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="kt">real</span>                <span class="kd">::</span> <span class="n">smooth</span>
+    <span class="kt">real</span><span class="p">,</span> <span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span>    <span class="kd">::</span> <span class="n">x</span>
+    <span class="n">smooth</span> <span class="o">=</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">x</span> <span class="o">-</span> <span class="mi">3</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">x</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+<span class="k">end</span></code></pre></div>
+<p>Функция distance обзавелась атрибутом elemental, в котором не было необходимости, так как у Julia более
+гибкие механизмы векторизации. Точка представлена координатами, поскольку в elemental функциях нельзя
+смешивать векторные и скалярные величины, точнее векторы должны быть представлены некоторым типом &hellip;</p>
+<div class="highlight"><pre class="chroma"><code class="language-fortran" data-lang="fortran"><span class="k">elemental function </span><span class="n">distance</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+    <span class="kt">real</span>                <span class="kd">::</span> <span class="n">dist</span>
+    <span class="kt">real</span><span class="p">,</span> <span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span>    <span class="kd">::</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">rad</span>
+    <span class="n">dist</span> <span class="o">=</span> <span class="n">smooth</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="nb">sqrt</span><span class="p">((</span><span class="n">v</span> <span class="o">-</span> <span class="n">x</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">u</span> <span class="o">-</span> <span class="n">y</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">),</span> <span class="mf">1.0</span><span class="p">))</span>
+<span class="k">end</span></code></pre></div>
+<p>cама программа выгладит так &hellip;</p>
+<div class="highlight"><pre class="chroma"><code class="language-fortran" data-lang="fortran"><span class="kt">integer</span> <span class="kd">::</span> <span class="n">nx</span> <span class="o">=</span> <span class="mi">10000</span><span class="p">,</span> <span class="n">ny</span> <span class="o">=</span> <span class="mi">10000</span>
+<span class="kt">real</span>    <span class="kd">::</span> <span class="n">img</span><span class="p">(</span><span class="n">nx</span><span class="p">,</span> <span class="n">ny</span><span class="p">),</span> <span class="n">uv</span><span class="p">(</span><span class="n">nx</span><span class="p">,</span> <span class="n">ny</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+
+<span class="k">call </span><span class="n">gradient</span><span class="p">(</span><span class="n">uv</span><span class="p">)</span>
+<span class="n">img</span> <span class="o">=</span> <span class="n">distance</span><span class="p">(</span><span class="n">uv</span><span class="p">(:,:,</span><span class="mi">1</span><span class="p">),</span> <span class="n">uv</span><span class="p">(:,:,</span><span class="mi">2</span><span class="p">),</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)</span></code></pre></div>
+<p>Согласитесь, в чём-то схоже с Julia, только никаких массивов между строк. Чтобы запустить программу,
+её нужно скомпилировать, я не стал возиться c Flang и пользуюсь gfortran поставляемый вместе с msys2.</p>
+
+<p>проверяем производительность &hellip;</p>
+
+<blockquote>
+<p>$ time program.exe <br><br>
+real    0m1.725s <br>
+user    0m0.000s <br>
+sys     0m0.015s</p>
+</blockquote>
+
+<p>Почти в десять раз быстрее Julia ! Складывается впечатление, сто Julia по скорости ничем не отличается от
+интерпретируемых языков, а все рассказы о его быстродействии - всего лишь маркетинговые уловки.
+Но постойте, оба алгоритма не одинаковые, переписывая медленный код на Fortran мы изменили логику, стали
+контролировать выделение памяти, что если попробовать сделать всё то же самое в Julia.</p>
+
+<p>Переводить c Fortran на Julia очень просто, так как языки схожи, то программа претерпевает минимум
+изменений, иногда складывается впечатление что Julia это своеобразный Fortran++. Я не буду приводить здесь
+модифицированные функции, поскольку они практически идентичны написанным на Fortran. Скажу только то,
+что к моему удивлению, время вычисления стало меньше чем у Fortran программы &hellip;</p>
+
+<blockquote>
+<p>1.509835 seconds (750.40 k allocations: 1.107 GiB, 5.76% gc time)</p>
+</blockquote>
+
+<p>&hellip; то есть, динамический язык со сборщиком мусора может работать быстрее чем Fortran, теперь я понимаю
+к чему все эти восторженные статьи в авторитетных журналах. Вот только чтобы добиться такой производительности
+нужно программировать на Julia как на Fortran, исключая из кода некоторые хорошие возможности языка.
+Хотя сам факт того, что этой производительности можно добиться штатными средствами является большим
+плюсом для Julia. Наличие подушки безопасности в виде Fortran или С приятно успокаивает, всегда имеется
+возможность выполнить численную или системную часть программы на эффективном языке с последующим
+бесшовным подключением к основному проекту.</p>
+
+<h1 id="редакция">редакция</h1>
+
+<p>Проводя дальнейшие исследования я выяснил, что причина низкой скорости выполнения первоначального
+алгоритма заключалась в сопоставлении массивов разной вложенности т.е &hellip;</p>
+<div class="highlight"><pre class="chroma"><code class="language-julia" data-lang="julia"><span class="n">distance</span><span class="o">.</span><span class="p">(</span><span class="n">img</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">img</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="p">[[</span><span class="mf">0.5</span> <span class="mf">0.5</span><span class="p">]])</span> <span class="c"># одна точка</span>
+<span class="n">distance</span><span class="o">.</span><span class="p">(</span><span class="n">img</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">img</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="p">[[</span><span class="n">x1</span> <span class="n">y1</span><span class="p">;</span> <span class="n">x2</span> <span class="n">y2</span> <span class="o">...</span> <span class="n">xn</span> <span class="n">yn</span><span class="p">]])</span> <span class="c"># несколько точек</span></code></pre></div>
+<p>нужно переделать как &hellip;</p>
+<div class="highlight"><pre class="chroma"><code class="language-julia" data-lang="julia"><span class="n">distance</span><span class="o">.</span><span class="p">(</span><span class="n">img</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">img</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">xs</span><span class="p">,</span> <span class="n">ys</span><span class="p">)</span></code></pre></div>
+<p>где xs, ys - массивы размерности (1, 1, n), также производительность может упасть в ситуации, когда массив, для
+предотвращения его развёртывания передаётся как Ref, в таком случае необходимо сохранить вложенность массивов изменив
+их размерность, например для сопоставления каждой точке поверхности некоторой матрицы, её нужно переопределить следующим образом &hellip;</p>
+<div class="highlight"><pre class="chroma"><code class="language-julia" data-lang="julia"><span class="n">reshape</span><span class="p">(</span><span class="n">matrix</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">m</span><span class="p">)</span></code></pre></div>
+<p>дальнейшие манипуляции могут выглядеть следующим образом &hellip;</p>
+<div class="highlight"><pre class="chroma"><code class="language-julia" data-lang="julia"><span class="n">sum</span><span class="p">(</span><span class="n">uv_grid</span> <span class="o">.*</span> <span class="n">matrix</span><span class="p">,</span> <span class="n">dims</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span> </code></pre></div>
+<p>В общем, при соблюдении простых правил сопоставления, скорость выполнения Julia может быть приближена к Fortran.</p>
+</article><img src="/images/page_terminator.svg" width="100%"><div class="footnote"><p><span>synxroform :__zaika_denis</span>/ A.01 / 21.09.2019
+
+
+</p></div></div></body></html>
