@@ -92,7 +92,6 @@ function generate_table(num_rows, num_cols, blk_width, kerning) {
     
     let ct = document.getElementById("cell_template");
     let post_md = document.getElementsByName("post_md");
-    console.log(post_md)
 
     for (let n = 0; n < num_rows; n += 1) {
         let offset = (n % 2) * 100;
