@@ -101,7 +101,8 @@ a {
     text-align: center;
     font-size: 14px;
     color: white;
-    width: fit-content;
+    width: -moz-min-content;
+    width: -webkit-min-content;
 }
 
 .mail {
