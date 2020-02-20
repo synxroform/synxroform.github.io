@@ -1,23 +1,66 @@
-<!DOCTYPE html><html lang="ru"><head><title>Give Me More</title><link rel="stylesheet" href="/css/page_style.css"><link rel="stylesheet" href="/css/article_style.css"><link rel="stylesheet" href="/css/picture_style.css"><link rel="stylesheet" href="/css/syntax.css"><link rel="stylesheet" href="/css/image_viewer.css"></head><body><div class="head_white_background"></div><div class="head_background"></div><div class="button_panel"><a href="http://github.com/synxroform/"><img src="/images/GitHub_alt-512.png" height="40px"></a></div><!-- navigation --><a href="/posts/objects-and-methods/"><svg class="arrow_next" viewBox="0 0 477.175 477.175"><linearGradient id="lin_grad2"><stop offset="0%" stop-color="#fff0"></stop><stop offset="100%" stop-color="white"></stop></linearGradient><g><path d="M360.731,229.075l-225.1-225.1c-5.3-5.3-13.8-5.3-19.1,0s-5.3,13.8,0,19.1l215.5,215.5l-215.5,215.5 c-5.3,5.3-5.3,13.8,0,19.1c2.6,2.6,6.1,4,9.5,4c3.4,0,6.9-1.3,9.5-4l225.1-225.1C365.931,242.875,365.931,234.275,360.731,229.075z" fill="url(#lin_grad2)"></path></g></svg></a><div class="page_container"><div class="page_head"><a class="page_button" href="/index.html">список статей</a><span class="page_logo">СИНХРОФОРМА</span><span class="page_date">21.09.2019</span></div><div class="page_id_container"><span class="page_id">A.01</span></div><div class="big_arrow"></div><article class="page_text">
+<html lang=ru>
+    <head>
+        <title> Give Me More </title>
+        <link rel="stylesheet" href="/css/page_style.css" />
+        <link rel="stylesheet" href="/css/article_style.css" />
+        <link rel="stylesheet" href="/css/picture_style.css" />
+        <link rel="stylesheet" href="/css/syntax.css" />
+        <link rel="stylesheet" href="/css/image_viewer.css" />
+    </head>
 
-<p>Периодически, в различных задачах возникает необходимость построения функции расстояния от поля до
-некоторой точки. В принципе, реализация у функции простая, но так как она будет вызываться многократно
-в некотором цикле, то к поиску решения необходимо отнестись серьёзно. Алгоритм я буду писать на Julia -
-новом и высокопроизводительном языке, специализированном для проведения технических расчетов.
-Создатели языка обещают скорость выполнения сравнимую с Fortran или С. Julia является компилируемым языком,
-но в отличии от Fortran компиляция выполняется автоматически, при первом обращении к модулю. Такая особенность
-очень удобна при разработке программ состоящих из множества модулей, так как Julia самостоятельно разрешает все
-зависимости проекта без использования make-файлов. Лично мне Julia понравилась тем, что она очень похожа на Matlab.
-Это также означает что она гораздо чище NumPy, поскольку векторные операции встроены непосредственно в язык, а не в отдельный модуль.
-Как и Python, Julia является динамическим языком со сборщиком мусора, хотя с динамичностью всё сложнее, ведь она
-способна специализировать функции под конкретные типы аргументов, наподобие Numba, только на всём языке вместо
-сильно ограниченного подмножества. Так же как и в любом другом динамическом языке, программирование быстрых алгоритмов
-требует специальных методик.</p>
+    <body>
+        <div class="head_white_background"></div>
+        <div class="head_background"></div>
+        <div class="button_panel">
+            <a href="/index.html">
+                <img src="/images/home-icon-silhouette.svg" height=35px style="margin-right: 20px;"/>
+            </a>
+            <a href="http://github.com/synxroform/">
+                <img src="/images/GitHub_alt-512.png" height=40px/>
+            </a>
 
-<p>Итак, приступим к решению. Для начала, нам необходимо построить поле в котором мы будем
-производить измерения. Выражаясь языком компьютерной графики - вертикальный и
-горизонтальный линейные градиенты. В Julia, матрице можно присвоить вектор, и в зависимости
-от того столбец это или строка, он будет повторятся в нужном направлении&hellip;</p>
+        </div>
+
+            
+            
+            
+            <a href="/posts/objects-and-methods/">
+                <svg class="arrow_next" viewBox="0 0 477.175 477.175">
+                    <linearGradient id="lin_grad2">
+                        <stop offset="0%" stop-color="#fff0"></stop>
+                        <stop offset="100%" stop-color="#fff"></stop>
+                    </linearGradient>
+                    <g>
+                        <path d="M360.731,229.075l-225.1-225.1c-5.3-5.3-13.8-5.3-19.1,0s-5.3,13.8,0,19.1l215.5,215.5l-215.5,215.5 c-5.3,5.3-5.3,13.8,0,19.1c2.6,2.6,6.1,4,9.5,4c3.4,0,6.9-1.3,9.5-4l225.1-225.1C365.931,242.875,365.931,234.275,360.731,229.075z" fill="url(#lin_grad2)"></path>
+                    </g>
+                </svg>
+            </a>
+            
+
+        <div class="page_container">
+            <div class="page_head">
+                <a class="page_button" href="/posts"> список статей </a>
+                <span class="page_logo"> СИНХРОФОРМА </span>
+                <span class="page_date">21.09.2019</span>
+            </div>
+
+            <div class="page_id_container">
+              <span class="page_id"> A.01 </span>
+            </div>
+            <div class="big_arrow"></div>
+            <article class="page_text">
+
+<p>Несмотря на то, что для сравнения производительности Julia и Fortran, было проведено достаточно тестов, многие программисты (в том числе и я), имеющие опыт работы с Fortran или Matlab, всё ещё пытаются понять парадигму Julia, которой нужно придерживаться для достижения максимальной производительности. Дело в том, что язык допускает различные стили программирования, но не все они являются оптимальными. В этой статье я расскажу, как я пытался программировать в стиле Numpy, а в результате выбрал стиль Fortran.</p>
+
+<p>Во многих геометрических задачах, особенно  в вычисления связанных с Signed Distance Fields возникает необходимость в определении расстояния от плотного множества точек до некоторой другой точки. Для представления трехмерного объекта  в виде скалярного поля, количество определяемых точек может исчисляться тысячами.
+Именно поэтому я взял этот простой алгоритм для экспериментов с оптимизацией.</p>
+
+<p>Julia является компилируемым языком, но в отличие от Fortran компиляция функции происходит при первом обращении к ней. Поэтому для систем, построенных на множестве одиночных вызовов, данная особенность может быть причиной  низкой производительности. Но о таких системах я слышал только на форуме посвященном управлению экспериментальными установками. Программы работающие с геометрией, в основном оперируют большими множествами однородных данных, поэтому компиляция при первом вызове не должна сказаться на общей производительности.</p>
+
+<p>Как и Python, Julia - динамический язык, но сходство здесь скорее поверхностное. В действительности иллюзия динамичности реализуется разнообразными средствами.
+Например, массив разнородных данных, во время компиляции может быть преобразован в массив void*. Если программа не интересуется типом данных, то они могут быть распакованы в более компактное представление (Unboxed). Реальную разницу можно заметить попытавшись связать Python и Julia с языком C. Julia с минимальным количеством надстроек ложится на структуру памяти C, в то время как Python требует взаимодействия со сложной системой объектов.</p>
+
+<p>Начнём наш эксперимент с построения поля в котором мы будем производить измерения, полем я называю дискретизацию некоторой прямоугольной области пространства. Для двухмерного случая оно будет представлено парой линейных градиентов повёрнутых друг относительно друга на девяносто градусов. В Julia, матрице можно присвоить вектор, и в зависимости от того столбец это или строка, он будет повторятся в соответствующем направлении.</p>
 <div class="highlight"><pre class="chroma"><code class="language-julia" data-lang="julia"><span class="k">function</span> <span class="n">gradient</span><span class="p">(</span><span class="n">nu</span><span class="p">,</span> <span class="n">nv</span><span class="p">)</span>
     <span class="n">x</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="n">nu</span><span class="p">,</span> <span class="n">nv</span><span class="p">)</span>   <span class="c"># создаем массив заполненный нулями</span>
     <span class="n">x</span> <span class="o">.=</span> <span class="p">(</span><span class="mi">1</span><span class="o">:</span><span class="n">nv</span><span class="p">)</span> <span class="o">./</span> <span class="n">nv</span>   <span class="c"># присваиваем массиву линейный градиент </span>
@@ -36,8 +79,9 @@
     <span class="n">dv</span> <span class="o">=</span> <span class="err">@</span><span class="o">.</span> <span class="n">v</span> <span class="o">-</span> <span class="n">point</span><span class="p">[</span><span class="o">:</span><span class="p">,</span><span class="mi">2</span><span class="p">]</span>
     <span class="k">return</span> <span class="n">smooth</span><span class="p">(</span><span class="n">min</span><span class="p">(</span><span class="n">sqrt</span><span class="p">(</span><span class="n">du</span><span class="o">^</span><span class="mi">2</span> <span class="o">+</span> <span class="n">dv</span><span class="o">^</span><span class="mi">2</span><span class="p">),</span> <span class="mi">1</span><span class="p">))</span> <span class="c"># длина вектора uv</span>
 <span class="k">end</span></code></pre></div>
-<p>Вот и всё, казалось бы что ещё можно добавить, самая простая и следовательно оптимальная реализация
-алгоритма, но всё же давайте проведём измерения &hellip;</p>
+<p>С точки зрения Matlab или Numpy, данный алгоритм является вполне адекватным.
+Пользователи этих систем, начинающие работать с Julia, скорее всего будут работать в привычном для себя стиле, однако такой подход может негативно отразиться на качестве разрабатываемого продукта. Несмотря на то, что Julia очень похожа на Matlab, правила и ограничения взятые из языка  Fortran образуют в ней высокопроизводительное ядро. Чтобы это проверить, запустим наш алгоритм на
+вычисление.</p>
 <div class="highlight"><pre class="chroma"><code class="language-julia" data-lang="julia"><span class="n">img</span> <span class="o">=</span> <span class="n">gradient</span><span class="p">(</span><span class="mi">10000</span><span class="p">,</span> <span class="mi">10000</span><span class="p">)</span>
 <span class="nd">@time</span> <span class="n">d</span> <span class="o">=</span> <span class="n">distance</span><span class="o">.</span><span class="p">(</span><span class="n">img</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">img</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="p">[[</span><span class="mf">0.5</span> <span class="mf">0.5</span><span class="p">]])</span></code></pre></div>
 <p>макрос @time показывает &hellip;</p>
@@ -46,18 +90,10 @@
 <p>15.622032 seconds (216.97 M allocations: 19.624 GiB, 9.54% gc time)</p>
 </blockquote>
 
-<p>Постойте, для нашей задачи, несмотря на то, что размер градиента не будет превышать 1000х1000,
-такие показатели производительности совершенно неприемлемы. Ладно, попробуем переписать алгоритм на
-Fortran, благо что Julia отлично с ним взаимодействует.</p>
+<p>Как мы видим, эту программу никак нельзя назвать эффективной. Например,
+аналогичное решение задачи построенное на языке Fortran обладает десятикратным преимуществом.</p>
 
-<p>Сегодня Fortran переживает вторую молодость, благодаря таким проектам как Flang и CUDA-Fortran. Конечно, очень часто
-можно услышать замечания по поводу того, что это старый и сложный язык программирования, но как правило такое говорят
-вечно молодые программисты java script, не имеющие отношения к разработке численных методов. Некоторым не нравится его
-многословность, но это относится только к блоку объявлений переменных. В общем, современный человек не будет
-чувствовать себя ущербным программируя на Fortran - свежие компиляторы, качественные библиотеки, возможность
-вызова практически из любого языка программирования, но самое главное - адекватное сообщество.</p>
-
-<p>Приступим к делу, первым пойдет градиент &hellip;</p>
+<p>Используя векторизованные операторы, мы делегируем управление сопоставлением массивов компилятору. В случае, если размеры массивов совпадают, то все системы действуют примерно одинаково. Автоматически сопоставляя массивы разной формы, мы не имеем гарантий, что система выберет наиболее оптимальный способ. Более жесткие ограничения накладываемые Fortran на векторизованные операции способствуют построению однозначных и эффективных программ. Поэтому рассмотрим аналог нашего алгоритма, реализованный в системе Fortran.</p>
 <div class="highlight"><pre class="chroma"><code class="language-fortran" data-lang="fortran"><span class="k">subroutine </span><span class="n">gradient</span><span class="p">(</span><span class="n">uv</span><span class="p">)</span>
     <span class="kt">real</span><span class="p">,</span> <span class="k">intent</span><span class="p">(</span><span class="n">out</span><span class="p">),</span> <span class="k">dimension</span><span class="p">(:,:,:)</span> <span class="kd">::</span> <span class="n">uv</span> 
     <span class="kt">integer</span> <span class="kd">::</span> <span class="n">sz</span><span class="p">,</span> <span class="n">n</span>
@@ -72,11 +108,7 @@ Fortran, благо что Julia отлично с ним взаимодейст
         <span class="k">end if
 </span><span class="k">    end do
 </span><span class="k">end</span></code></pre></div>
-<p>Это значительно больше чем аналогичная функция Julia, да и логика совсем другая. Дело
-в том, что Fortran не поддерживает broadcasting, то есть массивы участвующие в некоторой операции
-должны быть одинаковой структуры. Также я не стал генерировать градиент внутри процедуры и исключил
-промежуточные массивы в вычислениях. Следует отметить, что только глядя на шапку функции, можно многое
-сказать о выделяемой памяти, не надо как в С/C++ выискивать malloc/new внутри кода.</p>
+<p>Необходимость ручного сопоставления массивов разной формы значительно увеличила объем программы. Стоит отметить более чистую работу с промежуточными массивами, контроль которых в языке Julia может повлечь за собой отказ от векторных операций. Блок объявления переменных упрощает анализ используемой памяти, так как в отличие от других языков программирования отсутствует необходимость поиска в теле функции операторов выделения памяти.</p>
 
 <p>Функция smooth осталась без изменений &hellip;</p>
 <div class="highlight"><pre class="chroma"><code class="language-fortran" data-lang="fortran"><span class="k">pure function </span><span class="n">smooth</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
@@ -98,9 +130,6 @@ Fortran, благо что Julia отлично с ним взаимодейст
 
 <span class="k">call </span><span class="n">gradient</span><span class="p">(</span><span class="n">uv</span><span class="p">)</span>
 <span class="n">img</span> <span class="o">=</span> <span class="n">distance</span><span class="p">(</span><span class="n">uv</span><span class="p">(:,:,</span><span class="mi">1</span><span class="p">),</span> <span class="n">uv</span><span class="p">(:,:,</span><span class="mi">2</span><span class="p">),</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)</span></code></pre></div>
-<p>Согласитесь, в чём-то схоже с Julia, только никаких массивов между строк. Чтобы запустить программу,
-её нужно скомпилировать, я не стал возиться c Flang и пользуюсь gfortran поставляемый вместе с msys2.</p>
-
 <p>проверяем производительность &hellip;</p>
 
 <blockquote>
@@ -110,27 +139,17 @@ user    0m0.000s <br>
 sys     0m0.015s</p>
 </blockquote>
 
-<p>Почти в десять раз быстрее Julia ! Складывается впечатление, сто Julia по скорости ничем не отличается от
-интерпретируемых языков, а все рассказы о его быстродействии - всего лишь маркетинговые уловки.
-Но постойте, оба алгоритма не одинаковые, переписывая медленный код на Fortran мы изменили логику, стали
-контролировать выделение памяти, что если попробовать сделать всё то же самое в Julia.</p>
+<p>Для оптимизации нашей первой программы, мы можем перенести все указанные ограничения в систему Julia. А именно, массивы разной формы должны быть унифицированы, таким образом, Julia сможет упростить цепочки операций и выделение памяти. Непосредственное преобразование вектора в матрицу сложно назвать экономией вычислительных ресурсов, для таких целей в Julia реализована система декартовых индексов, позволяющая выполнять эффективное сопоставление массивов без изменения их представления в памяти.</p>
 
-<p>Переводить c Fortran на Julia очень просто, так как языки схожи, то программа претерпевает минимум
-изменений, иногда складывается впечатление что Julia это своеобразный Fortran++. Я не буду приводить здесь
-модифицированные функции, поскольку они практически идентичны написанным на Fortran. Скажу только то,
-что к моему удивлению, время вычисления стало меньше чем у Fortran программы &hellip;</p>
+<p>Я не буду приводить здесь модифицированные функции Julia, поскольку они практически идентичны написанным на Fortran. Скажу только, что после применения ограничений, скорости выполнения программ реализованных в Julia и Fortran стали примерно одинаковыми. Это достаточно удивительный факт, поскольку раньше считалось, что динамические языки с управляемой памятью не могут конкурировать со статически компилируемыми языками.</p>
+
+<p>время выполнения julia</p>
 
 <blockquote>
 <p>1.509835 seconds (750.40 k allocations: 1.107 GiB, 5.76% gc time)</p>
 </blockquote>
 
-<p>&hellip; то есть, динамический язык со сборщиком мусора может работать быстрее чем Fortran, теперь я понимаю
-к чему все эти восторженные статьи в авторитетных журналах. Вот только чтобы добиться такой производительности
-нужно программировать на Julia как на Fortran, исключая из кода некоторые хорошие возможности языка.
-Хотя сам факт того, что этой производительности можно добиться штатными средствами является большим
-плюсом для Julia. Наличие подушки безопасности в виде Fortran или С приятно успокаивает, всегда имеется
-возможность выполнить численную или системную часть программы на эффективном языке с последующим
-бесшовным подключением к основному проекту.</p>
+<p>В случае, если вы собираетесь перейти на Julia с Matlab или Numpy, я бы рекомендовал посидеть в Fortran на карантине, таким образом вы избавитесь от потенциально опасных привычек.</p>
 
 <h1 id="редакция">редакция</h1>
 
@@ -147,7 +166,13 @@ sys     0m0.015s</p>
 <p>дальнейшие манипуляции могут выглядеть следующим образом &hellip;</p>
 <div class="highlight"><pre class="chroma"><code class="language-julia" data-lang="julia"><span class="n">sum</span><span class="p">(</span><span class="n">uv_grid</span> <span class="o">.*</span> <span class="n">matrix</span><span class="p">,</span> <span class="n">dims</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span> </code></pre></div>
 <p>В общем, при соблюдении простых правил сопоставления, скорость выполнения Julia может быть приближена к Fortran.</p>
-</article></div><div class="footnote"><p><span>synxroform :__zaika_denis</span>/ A.01 / 21.09.2019
-
-
-</p></div></body></html>
+</article> 
+        </div>
+        <div class="footnote">
+            <p>
+                <span> synxroform :__zaika_denis / A.01 / 21.09.2019</span>
+            </p>
+        </div>
+        
+    </body>
+</html>

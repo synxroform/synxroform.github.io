@@ -1,156 +1,130 @@
 @font-face {
-    font-family: "Exo2-Light";
-    src: url("/fonts/Exo2-Light.ttf")
+    font-family: "Exo2-Regular";
+    src: url("/fonts/Exo2-Regular.ttf")
 }
-
-@font-face {
-    font-family: "Exo2-SemiBold";
-    src: url("/fonts/Exo2-SemiBold.ttf")
-}
-
-@font-face {
-    font-family: "FiraCode-Regular";
-    src: url("/fonts/FiraCode-Regular.ttf")
-}
-
-.page_menu {
-    display: flex;
-    width: 100%;
-}
-
-.page_logo {
-    font-family: "Exo2-Light";
-    display: inline;
-    letter-spacing: 0.4em;
-    font-size: 20px;
-    color: #888888;
-}
-
-.page_id {
-    font-family: "Exo2-SemiBold";
-    margin-bottom: 0px;
-    margin-left: 80px;
-    font-size: 20px;
-    height: 29px;
-    overflow: hidden;
-    width:50px;
-    color: #999;
-}
-
-.page_id div {
-    position: relative;
-    bottom: 0px;
-}
-
-.page_id span {
-    display: block
-}
-
-.page_info {
-    flex: 1;
-    margin-left: 100px;
-    position: relative;
-}
-
-.page_info div {
-    position: absolute;
-    bottom: 6px;
-    font-family: "Exo2-Light";
-    font-size: 13px;
-    color: #888888;
-}
-
 
 body {
-    background-color: #eeeeee
+    background: #eee;
+    padding: 0px;
+    margin: 0px;
 }
 
-.postlist_page {
-    margin: auto;
-    width: 80%;
-    height: 90%;
-    padding-top: 50px;
-}
-
-.postlist_frame {
-    position: relative;
-    display: block;
-    overflow: hidden;
-    margin: auto;
-    margin-top: 200px;
+.space {
     height: 100px;
 }
 
-.postlist {
-    position: absolute;
+.page {
     width: 100%;
-    height: 100%;
+    background-image: url("/images/head_background.jpg");
 }
 
-
-.l_cell, .r_cell {
-    position: absolute;
-    border-radius: 7px;
-    height: 15px;
-}
-
-.l_cell {
-    background: linear-gradient(to left, #eee, #777);
-}
-
-.l_cell:hover {
-    cursor:pointer;
-    background: linear-gradient(to left, #eee, #fd61aa);
-}
-
-.r_cell {
-    background: linear-gradient(to right, #eee, #777);
-}
-
-.r_cell:hover {
-    cursor:pointer;
-    background: linear-gradient(to right, #eee, rgb(127, 203, 238));
-}
-
-.marker {
-    font-family: "FiraCode-Regular";
-    color: #eee;
-    display: block;
-    font-size: 12px;
+.row {
     position: relative;
-    height: 100%;
-    width: 100%;
+    margin: auto;
+    width: 80%;
+    display: flex;
 }
 
-.marker span {
-    pointer-events: none;
+.column {
+    flex: 50%;
+    font-family: "Exo2-Regular";
+    font-size: 18px;
+    text-indent: 0em;
+    text-align: justify;
+    text-justify: inter-character;
+    color: #555555; 
+    margin-bottom: 20px
+}
+
+.column_space {
+    flex: 2%
+}
+
+.big_letters {
+    font-family: "Exo2-Regular";
+    font-size: 30px;
+    padding-top: 100px;
+    padding-bottom: 100px;
+    width: 80%;
+    margin: auto;
+    color: #555;
+}
+
+.simple_text {
+    margin: auto;
+    align-items: center;
+    width: 80%;
+    font-family: "Exo2-Regular";
+    font-size: 20px;
+}
+
+.bulleted_text {
+    display: flex;
+    align-items: center;
+    width: 80%;
+    margin: auto;
+    margin-bottom: 20px;
+    font-family: "Exo2-Regular";
+    font-size: 20px;
+    vertical-align: middle;
+}
+
+.bullet {
+    width: 30px;
+    margin-right: 30px;
+}
+
+a {
+    text-decoration: none;
+}
+
+.button {
+    margin:auto;
+    background: dodgerblue;
+    padding: 50px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    font-family: "Exo2-Regular";
+    font-size: 20px;
+    color: white;
+    width: fit-content;
+    
+}
+
+.small_button {
+    margin-right: 20px;
+    background: #555;
+    border-radius: 10px;
+    padding: 5px;
+    font-family: "Exo2-Regular";
+    text-align: center;
+    font-size: 14px;
+    color: white;
+    width: fit-content;
+}
+
+.mail {
+    margin:auto;
+    font-family: "Exo2-Regular";
+    font-size: 20px;
+    text-align: center;    
+}
+
+.button_panel {
     position: absolute;
+    display: flex;
+    align-items: center;
+    vertical-align: middle;
+    top: 0px;
+    padding-top: 20px;
+    padding-right: 50px;
+    right: 100px;
 }
 
-.l_cell .marker span {
-    left: 10px;
+.button_panel img {
+    opacity: 50%;
 }
 
-.r_cell .marker span {
-    right: 10px;
-}
-
-.list_slider {
-    margin-top: 50px;
-    overflow:hidden;
-    position: relative;
-    background: #ccc;
-    width: 100%;
-    height: 4px;
-}
-
-.list_slider_thumb {
-    position: absolute;
-    width: 25%;
-    background: #aaa;
-    height: 100%;
-}
-
-.list_slider_thumb:hover {
-    cursor:pointer;
+.button_panel img:hover {
+    opacity: 100%;
 }
