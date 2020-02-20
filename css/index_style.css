@@ -80,6 +80,7 @@ a {
 }
 
 .button {
+    display:table;
     margin:auto;
     background: dodgerblue;
     padding: 50px;
