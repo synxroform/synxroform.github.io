@@ -80,7 +80,6 @@ a {
 }
 
 .button {
-    display:table;
     margin:auto;
     background: dodgerblue;
     padding: 50px;
@@ -94,7 +93,6 @@ a {
 }
 
 .small_button {
-    display:inline;
     margin-right: 20px;
     background: #555;
     border-radius: 10px;
@@ -103,8 +101,7 @@ a {
     text-align: center;
     font-size: 14px;
     color: white;
-    width: -moz-min-content;
-    width: -webkit-min-content;
+    width: fit-content;
 }
 
 .mail {
